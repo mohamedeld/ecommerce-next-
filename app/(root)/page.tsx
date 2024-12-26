@@ -1,3 +1,5 @@
+import ProductList from "@/components/shared/products/product-list"
+import sampleData from "@/lib/sample-data"
 
 export const metadata = {
   title:'Home'
@@ -5,7 +7,9 @@ export const metadata = {
 
 const HomePage = () => {
   return (
-    <div>HomePage</div>
+    <div>
+      <ProductList data={sampleData} title="Newest Arrivals" limit={4}/>
+    </div>
   )
 }
 
