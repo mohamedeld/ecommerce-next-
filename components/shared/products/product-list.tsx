@@ -1,3 +1,4 @@
+import ProductCard from "./ProductCard";
 
 type TProps = {
   data:any;
@@ -13,7 +14,7 @@ const ProductList = ({data,title,limit}:TProps) => {
       {data?.products?.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
         {limitedData?.map((product:any) => (
-          <div key={product?.name}>{product?.name}</div>
+          <ProductCard key={product?.name} product={product}/>
         ))}
         </div>
       ) :(
