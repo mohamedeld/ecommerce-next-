@@ -2,10 +2,11 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import Image from "next/image";
 import Link from "next/link"
 import ProductPrice from "./ProductPrice";
+import { Product } from "@prisma/client";
 
 
 interface IProps{
-  product:any;
+  product:Product;
 }
 const ProductCard = ({product}:IProps) => {
   return (
@@ -21,9 +22,9 @@ const ProductCard = ({product}:IProps) => {
           <h2 className="text-sm font-medium">{product?.name}</h2>
         </Link>
         <div className="flex-between gap-4">
-          <p>{product?.rating} Stars</p>
+          <p>{Number(product?.rating)} Stars</p>
           {product?.stock > 0 ? (
-            <ProductPrice value={product?.price}/>
+            <ProductPrice value={Number(product?.price)}/>
           ):(
             <p className="text-destructive">Out of stock</p>
           )}

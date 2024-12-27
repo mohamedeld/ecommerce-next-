@@ -1,14 +1,16 @@
+import { getLatestProducts } from "@/actions/product.action"
 import ProductList from "@/components/shared/products/product-list"
-import sampleData from "@/lib/sample-data"
 
 export const metadata = {
   title:'Home'
 }
 
-const HomePage = () => {
+const HomePage = async () => {
+  const products = await getLatestProducts();
+  
   return (
     <div>
-      <ProductList data={sampleData} title="Newest Arrivals" limit={4}/>
+      <ProductList data={products || []} title="Newest Arrivals" limit={4}/>
     </div>
   )
 }
