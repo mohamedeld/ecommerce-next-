@@ -1,12 +1,18 @@
+import { auth } from "@/auth"
 import CredentialsSignInForm from "@/components/shared/auth/credentials-signin-form"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { APP_NAME } from "@/lib/constants"
 import Image from "next/image"
 import Link from "next/link"
+import { redirect } from "next/navigation"
 
-const SignInPage = () => {
+const SignInPage = async () => {
+  const session = await auth();
+  if(session){
+    return redirect("/")
+  }
   return (
-    <div className='w-full max-w-md mx-auto'>
+    <div className='w-full max-w-md mx-auto !h-[100vh]'>
       <Card>
         <CardHeader className='space-y-4'>
           <Link href='/' className='flex-center'>

@@ -1,14 +1,22 @@
 'use client';
 
-import { Button } from "@/components/ui/button"
+import { signInWithCredentials } from "@/actions/user.action";
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
+import { useActionState } from "react";
+import CustomButton from "./CustomButton";
 
 const CredentialsSignInForm = () => {
+  const [data,action] = useActionState(signInWithCredentials,{
+    success:false,
+    message:''
+  })
+
   
+
   return (
-    <form>
+    <form action={action}>
       <div className="space-y-6">
         <div>
           <Label htmlFor="email">Email</Label>
@@ -19,8 +27,13 @@ const CredentialsSignInForm = () => {
           <Input id="password" name="password" type="password" required autoComplete="current-password" defaultValue={''}/>
         </div>
         <div>
-          <Button className="w-full" variant={'default'}>Sign In</Button>
+          <CustomButton text="Sign In" className="w-full" variant={'default'}/>
         </div>
+        {
+          data && !data?.success && (
+            <div className="text-center text-destructive">{data?.message}</div>
+          )
+        }
         <div className="text-sm text-center text-muted-foreground">
           Don&apos;t have an account?{' '}
           <Link href='/sign-up' target="_self" className="link">Sign Up</Link>
