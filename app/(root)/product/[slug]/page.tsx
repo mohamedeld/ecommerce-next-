@@ -1,8 +1,8 @@
 import { getProduct } from "@/actions/product.action";
+import AddToCart from "@/components/shared/products/add-to-cart";
 import ProductImages from "@/components/shared/products/product-images";
 import ProductPrice from "@/components/shared/products/ProductPrice";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { notFound } from "next/navigation";
 
@@ -65,7 +65,14 @@ const ProductDetailPage = async ({params}:IParams) => {
                   <div>
                   {product?.stock > 0 && (
                     <div className="flex-center">
-                      <Button className="w-full">Add to cart</Button>
+                      <AddToCart item={{
+                        productId:product?.id,
+                        name:product?.name,
+                        slug:product?.slug,
+                        price:String(product?.price),
+                        qty:1,
+                        image:product?.images[0],
+                      }}/>
                     </div>
                   )}
                   </div>

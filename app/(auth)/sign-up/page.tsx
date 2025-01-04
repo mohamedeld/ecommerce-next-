@@ -1,10 +1,15 @@
 import { auth } from "@/auth"
-import CredentialsSignInForm from "@/components/shared/auth/credentials-signin-form"
+import SignUpForm from "@/components/shared/auth/sign-up-form"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { APP_NAME } from "@/lib/constants"
+import { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+
+export const metadata:Metadata = {
+  title:"Sign up"
+}
 
 interface IProps{
   searchParams:Promise<{
@@ -12,12 +17,13 @@ interface IProps{
   }>
 }
 
-const SignInPage =async  ({searchParams}: IProps) => {
+const SignupPage = async ({searchParams}:IProps) => {
   const {callbackUrl} = await searchParams;
   const session = await auth();
   if(session){
-    return redirect(callbackUrl || "/")
+    return redirect(callbackUrl || '/');
   }
+
   return (
     <div className='w-full max-w-md mx-auto !h-[100vh]'>
       <Card>
@@ -31,17 +37,17 @@ const SignInPage =async  ({searchParams}: IProps) => {
               priority={true}
             />
           </Link>
-          <CardTitle className='text-center'>Sign In</CardTitle>
+          <CardTitle className='text-center'>Register</CardTitle>
           <CardDescription className='text-center'>
-            Sign in to your account
+            Register your account
           </CardDescription>
         </CardHeader>
         <CardContent className='space-y-4'>
-          <CredentialsSignInForm />
+          <SignUpForm />
         </CardContent>
       </Card>
     </div>
   )
 }
 
-export default SignInPage
+export default SignupPage
