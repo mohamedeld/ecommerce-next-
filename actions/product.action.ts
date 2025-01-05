@@ -1,6 +1,6 @@
 'use server';
 
-import prisma from "@/db/initDB";
+import {prisma} from "@/db/initDB";
 
 export async function getLatestProducts(){
   try{

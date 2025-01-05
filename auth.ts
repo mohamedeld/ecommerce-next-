@@ -40,6 +40,7 @@ export const config = {
         if(user && user?.password){
           const isMatch = compareSync(credentials?.password as string,user?.password);
           if(isMatch){
+            
             return{
               id:user?.id,
               name:user?.name,
@@ -54,6 +55,7 @@ export const config = {
   ],
   callbacks:{
     async session({ session, user,trigger, token }:any) {
+      
       session.user.id = token?.sub;
       session.user.role = token?.role;
       session.user.name = token?.name;
@@ -64,23 +66,27 @@ export const config = {
     },
     async jwt({token,user,trigger,session}:any){
       if(user){
+        
         token.role = user?.role;
       }
       if(user?.name === "NO_NAME"){
         token.name = user?.email?.split('@')[0]
       }
-      await prisma.user.update({
-        where:{
-          id:user?.id
-        },
-        data:{
-          name:token.name
-        }
-      })
+      if(user){
+        await prisma.user.update({
+          where:{
+            id:user?.id
+          },
+          data:{
+            name:token.name
+          }
+        })
+      }
+      
       return token;
     },
     authorized({request,auth}:any){
-      if(request?.cookies?.get("sessionCartId")){
+      if(!request?.cookies?.get("sessionCartId")){
         // generate new session cart id
         const sessionCartId = crypto.randomUUID();
         // clone request headers 
