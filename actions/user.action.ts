@@ -1,6 +1,6 @@
 'use server';
 import { signIn, signOut } from "@/auth";
-import prisma from "@/db/initDB";
+import {prisma} from "@/db/initDB";
 import { formatError } from "@/lib/constants/utils";
 import { signInFormSchema, signUpFormSchema } from "@/lib/validator";
 import { hashSync } from "bcrypt-ts-edge";
