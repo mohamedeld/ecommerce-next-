@@ -1,3 +1,4 @@
+import { getMyCart } from "@/actions/cart.action";
 import { getProduct } from "@/actions/product.action";
 import AddToCart from "@/components/shared/products/add-to-cart";
 import ProductImages from "@/components/shared/products/product-images";
@@ -21,6 +22,7 @@ const ProductDetailPage = async ({params}:IParams) => {
   if(!product){
     notFound();
   }
+  const cart = await getMyCart();
   return (
     <>
       <section>
@@ -65,7 +67,9 @@ const ProductDetailPage = async ({params}:IParams) => {
                   <div>
                   {product?.stock > 0 && (
                     <div className="flex-center">
-                      <AddToCart item={{
+                      <AddToCart 
+                      cart={cart}
+                      item={{
                         productId:product?.id,
                         name:product?.name,
                         slug:product?.slug,
