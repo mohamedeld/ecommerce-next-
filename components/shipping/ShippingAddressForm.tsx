@@ -29,6 +29,7 @@ const ShippingAddressForm = ({ address }: IProps) => {
 
   async function onSubmit(values: z.infer<typeof shippingAddressSchema>) {
     startTransition(async()=>{
+      
       const response = await updateUserAddress(values);
       if(!response?.success){
         toast({
@@ -136,7 +137,7 @@ const ShippingAddressForm = ({ address }: IProps) => {
                   <FormItem className="w-full">
                     <FormLabel>Longitude</FormLabel>
                     <FormControl>
-                      <Input placeholder="please enter your longitude" {...field} />
+                      <Input placeholder="please enter your longitude" {...field}  />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -149,7 +150,9 @@ const ShippingAddressForm = ({ address }: IProps) => {
                   isPending ? (
                     <Loader className="w-4 h-4 animate-spin"/>
                   ):(
-                    <ArrowRight className="w-4 h-4"/>
+                    <>
+                      <ArrowRight className="w-4 h-4"/> Continue
+                    </>
                   )
                 }
               </Button>

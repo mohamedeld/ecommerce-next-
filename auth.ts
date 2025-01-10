@@ -66,7 +66,7 @@ export const config = {
     },
     async jwt({token,user,trigger,session}:any){
       if(user){
-        
+        token.id = user?.id;
         token.role = user?.role;
       }
       if(user?.name === "NO_NAME"){
@@ -81,11 +81,53 @@ export const config = {
             name:token.name
           }
         })
+        if(trigger === 'signIn' || trigger === 'signUp'){
+          const cookiesObject = await cookies();
+          const sessionCartId = cookiesObject.get('sessionCartId')?.value;
+          if(sessionCartId){
+            const sessionCart = await prisma.cart.findFirst({
+              where:{
+                sessionCartId
+              }
+            })
+            if(sessionCart){
+              await prisma.cart.deleteMany({
+                where:{
+                  userId:user?.id
+                }
+              })
+              await prisma.cart.update({
+                where:{
+                  id:sessionCart?.id
+                },
+                data:{
+                  userId:user?.id
+                }
+              })
+            }
+          }
+        }
       }
       
       return token;
     },
     authorized({request,auth}:any){
+
+      const protectedRoutes = [
+        /\/shipping-adress/,
+        /\/payment-method/,
+        /\/place-order/,
+        /\/profile/,
+        /\/user\/(.*)/,
+        /\/order\/(.*)/,
+        /\/admin/
+      ];
+      const {pathname} = request.nextUrl;
+
+      // check if user is not authenticated and accessing a protected path
+      if(!auth && protectedRoutes?.some((p)=> p.test(pathname))){
+        return false;
+      }
       if(!request?.cookies?.get("sessionCartId")){
         // generate new session cart id
         const sessionCartId = crypto.randomUUID();

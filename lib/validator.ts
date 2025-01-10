@@ -60,6 +60,6 @@ export const shippingAddressSchema = z.object({
   city:z.string().min(1,"City is required"),
   postalCode:z.string().min(1,"Postal code is required"),
   country:z.string().min(1,"Country is required"),
-  lat:z.number().optional(),
-  lng:z.number().optional()
+  lat:z.coerce.number().optional(),
+  lng:z.coerce.number().optional()
 })
