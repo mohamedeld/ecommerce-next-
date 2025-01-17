@@ -1,7 +1,7 @@
 'use client';
 
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader } from "lucide-react";
 import { useFormStatus } from "react-dom";
 
 interface IProps{
@@ -16,7 +16,7 @@ const CustomButton = ({text,className,variant}:IProps) => {
     <Button disabled={pending} className={className} variant={variant}>
       {pending ? (
         <>
-          <Loader2/>
+          <Loader className="w-4 h-4 animate-spin"/>
           {text}...
         </>
       ):text}
