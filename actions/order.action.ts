@@ -8,6 +8,7 @@ import { getMyCart } from "./cart.action";
 import { insertOrderSchema } from "@/lib/validator";
 import { prisma } from "@/db/initDB";
 import { CartItem } from "@/types";
+import { convertToPlainObject } from "@/lib/utils";
 
 export async function createOrder() {
   try {
@@ -91,6 +92,38 @@ export async function createOrder() {
       }
   } catch (error) {
     console.log("error ",error)
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    return {
+      success: false,
+      message: formatError(error),
+    };
+  }
+}
+
+
+export async function getOrderById(orderId:string){
+  try{
+    if(!orderId){
+      throw new Error("Please provide order id")
+    }
+    const data = await prisma.order.findFirst({
+      where:{
+        id:orderId
+      },
+      include:{
+        OrderItem:true,
+        user:{
+          select:{
+            name:true,
+            email:true
+          }
+        }
+      }
+    })
+  return convertToPlainObject(data);
+  }catch (error) {
     if (isRedirectError(error)) {
       throw error;
     }
