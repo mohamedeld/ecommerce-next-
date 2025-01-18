@@ -133,3 +133,40 @@ export async function getOrderById(orderId:string){
     };
   }
 }
+
+export async function getMyOrders({limit=10,page}:{
+  limit?:number;
+  page:number;
+}){
+  try{
+    const session = await auth();
+    if(!session){
+      throw new Error("session is not provided")
+    }
+    const data = await prisma.order.findMany({
+      where:{
+        userId:session?.user?.id
+      },
+      orderBy:{createdAt:'desc'},
+      take:limit,
+      skip:(page - 1) * limit
+    })
+    const dataCount = await prisma.order.count({
+      where:{
+        userId:session?.user?.id
+      },
+    })
+    return {
+      data,
+      totalPage:Math.ceil(dataCount / limit)
+    }
+  }catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    return {
+      success: false,
+      message: formatError(error),
+    };
+  }
+}
