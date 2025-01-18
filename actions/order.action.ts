@@ -9,6 +9,7 @@ import { insertOrderSchema } from "@/lib/validator";
 import { prisma } from "@/db/initDB";
 import { CartItem } from "@/types";
 import { convertToPlainObject } from "@/lib/utils";
+import { Prisma } from "@prisma/client";
 
 export async function createOrder() {
   try {
@@ -160,6 +161,58 @@ export async function getMyOrders({limit=10,page}:{
       data,
       totalPage:Math.ceil(dataCount / limit)
     }
+  }catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    return {
+      success: false,
+      message: formatError(error),
+    };
+  }
+}
+
+
+interface SalesDataType{
+  month:string;
+  totalSales:number;
+}
+
+export async function getOrderSummary(){
+  try{
+    const ordersCount = await prisma.order.count();
+    const productsCount = await prisma.product.count();
+    const usersCount = await prisma.user.count();
+    // Calculate the total sales
+    const totalSales = await prisma.order.aggregate({
+      _sum:{totalPrice:true}
+    })
+    // get monthly sales
+    const salesDataRaw = await prisma.$queryRaw<
+    Array<{ month: string; totalSales: Prisma.Decimal }>
+  >`SELECT to_char("createdAt", 'MM/YY') as "month", sum("totalPrice") as "totalSales" FROM "Order" GROUP BY to_char("createdAt", 'MM/YY')`;
+
+  const salesData:SalesDataType[] = salesDataRaw?.map(entry=> ({
+    month:entry?.month,
+    totalSales:Number(entry?.totalSales)
+  }))
+  const latestSales = await prisma.order.findMany({
+    orderBy: { createdAt: 'desc' },
+    include: {
+      user: { select: { name: true } },
+    },
+    take: 6,
+  });
+
+  return {
+    ordersCount,
+    productsCount,
+    usersCount,
+    totalSales,
+    latestSales,
+    salesData,
+  }
+
   }catch (error) {
     if (isRedirectError(error)) {
       throw error;
