@@ -1,5 +1,5 @@
 import { clsx, type ClassValue } from "clsx"
-import queryString from 'query-string';
+import qs from 'query-string';
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
@@ -97,15 +97,11 @@ export function formUrlQuery({
   key: string;
   value: string | null;
 }) {
-  const query = queryString.parse(params);
+  const query = qs.parse(params);
 
-  if (value === null) {
-    delete query[key];
-  } else {
-    query[key] = value;
-  }
+  query[key] = value;
 
-  return queryString.stringify(
+  return qs.stringifyUrl(
     {
       url: window.location.pathname,
       query,

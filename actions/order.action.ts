@@ -10,6 +10,7 @@ import { prisma } from "@/db/initDB";
 import { CartItem } from "@/types";
 import { convertToPlainObject } from "@/lib/utils";
 import { Prisma } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 
 export async function createOrder() {
   try {
@@ -213,6 +214,53 @@ export async function getOrderSummary(){
     salesData,
   }
 
+  }catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    return {
+      success: false,
+      message: formatError(error),
+    };
+  }
+}
+
+export async function getAllOrders({limit=10,page}:{limit?:number,page:number}){
+  try{
+    const data = await prisma.order.findMany({
+      orderBy:{createdAt:'desc'},
+      take:limit,
+      skip:(page - 1) * limit,
+      include:{user:{select:{name:true}}}
+    })
+    const dataCount = await prisma.order.count();
+    return {
+      data,
+      totalPages:Math.ceil(dataCount / limit)
+    }
+  }catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    return {
+      success: false,
+      message: formatError(error),
+    };
+  }
+}
+
+export async function deleteOrder(id:string){
+  try{
+    await prisma.order.delete({
+      where:{
+        id
+      }
+    });
+    revalidatePath("/admin/orders");
+    return {
+      success:true,
+      message:"Order deleted successfully"
+    }
   }catch (error) {
     if (isRedirectError(error)) {
       throw error;
