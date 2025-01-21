@@ -24,6 +24,9 @@ const DeleteDialog = ({id,action}:IProps) => {
         })
       }else{
         setOpen(false);
+        toast({
+          description:res?.message
+        })
       }
     })
   }
