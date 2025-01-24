@@ -2,9 +2,10 @@
 import { auth, signIn, signOut } from "@/auth";
 import {prisma} from "@/db/initDB";
 import { formatError } from "@/lib/constants/utils";
-import { paymentMethodSchema, shippingAddressSchema, signInFormSchema, signUpFormSchema } from "@/lib/validator";
+import { paymentMethodSchema, shippingAddressSchema, signInFormSchema, signUpFormSchema, updateUserSchema } from "@/lib/validator";
 import { ShippingAddressType } from "@/types";
 import { hashSync } from "bcrypt-ts-edge";
+import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { z } from "zod";
 export async function signInWithCredentials(prevState:unknown,formData:FormData){
@@ -185,4 +186,77 @@ try{
     message:formatError(error) || "Can not update user profile"
   }
 }
+}
+
+
+export async function getAllUser({limit=10,page}:{limit?:number,page:number}){
+  try{
+    const users = await prisma.user.findMany({
+      orderBy:{createdAt:"desc"},
+      skip:(page-1) * limit,
+      take:limit
+    })
+    const userCount = await prisma.user.count();
+    return {
+      data:users,
+      totalPages:Math.ceil(userCount / limit)
+    }
+  }catch(error){
+    return { 
+      success:false,
+      message:formatError(error) || "Can not update user payment"
+    }
+  }
+}
+
+export async function deleteUser(id:string){
+  try{
+    await prisma.user.delete({
+      where:{
+        id
+      }
+    });
+    revalidatePath("/admin/users");
+    return {
+      success:true,
+      message:"User deleted successfully"
+    }
+  }catch (error) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
+    return {
+      success: false,
+      message: formatError(error),
+    };
+  }
+}
+
+export async function updateUser(id:string,data:z.infer<typeof updateUserSchema>){
+  try{
+    const user = await prisma.user.findFirst({
+      where:{
+        id
+      }
+    });
+    if(!user){
+      throw new Error("User not found");
+    }
+    await prisma.user.update({
+      where:{
+        id
+      },
+      data
+    })
+    revalidatePath("/admin/users");
+    return {
+      success:true,
+      message:"User updated successfully"
+    }
+  }catch(error){
+    return { 
+      success:false,
+      message:formatError(error) || "Can not update user"
+    }
+  }
 }

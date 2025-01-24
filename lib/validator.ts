@@ -115,3 +115,8 @@ export const updateProfileSchmea = z.object({
   name:z.string().min(3,{message:"minmum characters should be 3"}),
   email:z.string().email({message:"enter a valid email"}),
 })
+
+export const updateUserSchema = updateProfileSchmea?.extend({
+  id:z.string().min(1,{message:"Product id is required"}),
+  role:z.string().min(1,{message:"Role is required"})
+})
