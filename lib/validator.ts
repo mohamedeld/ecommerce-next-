@@ -16,8 +16,14 @@ export const insertProductSchema = z.object({
   images:z.array(z.string()).min(1,{message:'At least one image is required'}),
   isFeatured:z.boolean(),
   banner:z.string().nullable(),
-  price:currency
+  price:currency,
+  
 })
+
+export const updateProductSchema = insertProductSchema?.extend({
+  id:z.string().min(1,{message:"Product id is required"})
+})
+
 
 export const signInFormSchema = z.object({
   email:z.string().email("Invalid email address"),
