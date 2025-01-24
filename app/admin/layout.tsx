@@ -6,6 +6,7 @@ import Image from "next/image";
 import Menu from "@/components/shared/Header/menu";
 import MainNav from "@/app/admin/main-nav";
 import { Input } from "@/components/ui/input";
+import AdminSearch from "@/components/AdminSearch";
 
 
 export const metadata: Metadata = {
@@ -36,6 +37,7 @@ export default function AdminLayout({
               />
             </Link>
             {/* main nav */}
+            <AdminSearch/>
             <MainNav className="mx-6 "/>
             <div className="ml-auto items-center flex space-x-4">
               <div>

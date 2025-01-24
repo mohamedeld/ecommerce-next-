@@ -14,12 +14,13 @@ export const metadata:Metadata = {
 
 const UsersPage = async ({params}:{
   params:Promise<{
-    page:string
+    page:string;
+    query:string;
   }>
 }) => {
-  const {page} = await params;
+  const {page,query} = await params;
   const currentPage = Number(page) || 1;
-  const users = await getAllUser({page:currentPage});
+  const users = await getAllUser({page:currentPage,query});
 
   return (
     <div className="space-y-2">

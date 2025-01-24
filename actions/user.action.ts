@@ -4,6 +4,7 @@ import {prisma} from "@/db/initDB";
 import { formatError } from "@/lib/constants/utils";
 import { paymentMethodSchema, shippingAddressSchema, signInFormSchema, signUpFormSchema, updateUserSchema } from "@/lib/validator";
 import { ShippingAddressType } from "@/types";
+import { Prisma } from "@prisma/client";
 import { hashSync } from "bcrypt-ts-edge";
 import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
@@ -189,9 +190,20 @@ try{
 }
 
 
-export async function getAllUser({limit=10,page}:{limit?:number,page:number}){
+export async function getAllUser({limit=10,page,query}:{limit?:number,page:number,query:string}){
   try{
+    const queryFilter:Prisma.OrderWhereInput = query && query !== 'all' ? {
+          user:{
+            name:{
+              contain:query,
+              mode:'insensitive',
+            }as Prisma.StringFilter
+          }
+        } : {}
     const users = await prisma.user.findMany({
+      where:{
+        ...queryFilter
+      },
       orderBy:{createdAt:"desc"},
       skip:(page-1) * limit,
       take:limit

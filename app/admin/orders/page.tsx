@@ -14,16 +14,17 @@ export const metadata:Metadata= {
 type TProps = {
   searchParams: Promise<{
     page: number;
+    query:string;
   }>
 }
 
 const OrdersPage = async ({searchParams}:TProps) => {
-  const {page = '1'} = await searchParams;
+  const {page = '1',query} = await searchParams;
    const session = await auth();
     if (session?.user?.role !== 'admin') {
       throw new Error("User is not authorized")
     }
-    const orders = await getAllOrders({page:Number(page),limit:10})
+    const orders = await getAllOrders({page:Number(page),limit:10,query:query})
   return (
     <div className="space-y-2">
       <h2 className="h2-bold">Orders</h2>

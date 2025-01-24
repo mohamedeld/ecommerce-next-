@@ -225,9 +225,20 @@ export async function getOrderSummary(){
   }
 }
 
-export async function getAllOrders({limit=10,page}:{limit?:number,page:number}){
+export async function getAllOrders({limit=10,page,query}:{limit?:number,page:number,query:string}){
   try{
+    const queryFilter:Prisma.OrderWhereInput = query && query !== 'all' ? {
+      user:{
+        name:{
+          contain:query,
+          mode:'insensitive',
+        }as Prisma.StringFilter
+      }
+    } : {}
     const data = await prisma.order.findMany({
+      where:{
+        ...queryFilter
+      },
       orderBy:{createdAt:'desc'},
       take:limit,
       skip:(page - 1) * limit,
