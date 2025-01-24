@@ -2,6 +2,7 @@
 
 import {prisma} from "@/db/initDB";
 import { formatError } from "@/lib/constants/utils";
+import { convertToPlainObject } from "@/lib/utils";
 import { insertProductSchema, updateProductSchema } from "@/lib/validator";
 import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
@@ -31,6 +32,23 @@ export async function getProduct(slug:string){
       }
     })
     return product;
+  }catch(error){
+    console.log(error);
+  }
+}
+
+
+export async function getProductById(id:string){
+  try{
+    if(!id){
+      throw new Error("id is required");
+    }
+    const product = await prisma.product.findFirst({
+      where:{
+        id
+      }
+    })
+    return convertToPlainObject(product);
   }catch(error){
     console.log(error);
   }

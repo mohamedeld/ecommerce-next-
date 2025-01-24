@@ -21,7 +21,7 @@ export const insertProductSchema = z.object({
 })
 
 export const updateProductSchema = insertProductSchema?.extend({
-  id:z.string().min(1,{message:"Product id is required"})
+  id:z.string().min(1,{message:"Product id is required"})?.optional()
 })
 
 

@@ -33,6 +33,7 @@ const ProductForm = ({ type, product, productId }: IProps) => {
       stock: product?.stock || 0,
       category: product?.category || "",
       description: product?.description || "",
+      brand: product?.brand || "",
       banner: product?.banner || "",
       slug: product?.slug || "",
       isFeatured: product?.isFeatured || false,
@@ -71,7 +72,6 @@ const ProductForm = ({ type, product, productId }: IProps) => {
           })
         } else {
           toast({
-
             description: res?.message
           })
           router.push("/admin/products");
