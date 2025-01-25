@@ -192,13 +192,11 @@ try{
 
 export async function getAllUser({limit=10,page,query}:{limit?:number,page:number,query:string}){
   try{
-    const queryFilter:Prisma.OrderWhereInput = query && query !== 'all' ? {
-          user:{
+    const queryFilter:Prisma.UserWhereInput = query && query !== 'all' ? {
             name:{
               contain:query,
               mode:'insensitive',
             }as Prisma.StringFilter
-          }
         } : {}
     const users = await prisma.user.findMany({
       where:{

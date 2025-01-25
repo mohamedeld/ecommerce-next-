@@ -166,3 +166,42 @@ export async function updateProduct(id:string,data:z.infer<typeof updateProductS
         };
       }
 }
+
+export async function getAllCategories(){
+  try{
+    const data = await prisma.product.groupBy({
+      by:['category'],
+      _count:true
+    })
+    return data;
+  }catch(error){
+    if (isRedirectError(error)) {
+          throw error;
+        }
+        return {
+          success: false,
+          message: formatError(error),
+        };
+      }
+}
+
+export async function getFeautredProducts(){
+  try{
+    const data = await prisma.product.findMany({
+      where:{
+        isFeatured:true
+      },
+      orderBy:{createdAt:"desc"},
+      take:4
+    })
+    return convertToPlainObject(data);
+  }catch(error){
+    if (isRedirectError(error)) {
+          throw error;
+        }
+        return {
+          success: false,
+          message: formatError(error),
+        };
+      }
+}
