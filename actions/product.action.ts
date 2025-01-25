@@ -4,6 +4,7 @@ import {prisma} from "@/db/initDB";
 import { formatError } from "@/lib/constants/utils";
 import { convertToPlainObject } from "@/lib/utils";
 import { insertProductSchema, updateProductSchema } from "@/lib/validator";
+import { Prisma } from "@prisma/client";
 import { revalidatePath } from "next/cache";
 import { isRedirectError } from "next/dist/client/components/redirect-error";
 import { z } from "zod";
@@ -54,10 +55,41 @@ export async function getProductById(id:string){
   }
 }
 
-export async function getAllProducts({page,limit,query,category}:{page:number,limit?:number,query:string,category?:string}){
+export async function getAllProducts({page,limit,query,category,sort,price,rating}:{page:number,limit?:number,query:string,category?:string,sort?:string,price?:string,rating?:string}){
   try{
+
+    const queryFilter:Prisma.ProductWhereInput = query && query !== 'all' ? {
+      name:{
+        contains:query,
+        mode:'insensitive'
+      } as Prisma.StringFilter
+    }:{}
+
+    const categoryFilter = category && category !== 'all' ? {
+      category
+    }: {}
+
+    const priceFilter:Prisma.ProductWhereInput = price && price !== 'all' ? {
+      price:{
+        gte:Number(price?.split('-')[0]),
+        lte:Number(price?.split('-')[1]),
+      } as Prisma.IntFilter
+    } : {}
+
+    const ratingFilter = rating && rating !== 'all' ? {
+      rating:{
+        gte:Number(rating)
+      } 
+    }:{}
+
     const data = await prisma.product.findMany({
       skip:(Number(page)-1) * (limit ?? 10),
+      where:{
+        ...queryFilter,
+        ...categoryFilter,
+        ...priceFilter,
+        ...ratingFilter
+      },
       take:limit ?? 10,
     })
     const dataCount = await prisma.product.count();
