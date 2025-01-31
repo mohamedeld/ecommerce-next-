@@ -14,7 +14,7 @@ const Search = async () => {
             <SelectValue placeholder="All"/>
           </SelectTrigger>
           <SelectContent>
-            <SelectItem key={"All"} value="All">All</SelectItem>
+            <SelectItem key={"All"} value="all">All</SelectItem>
             {Array.isArray(categories) && categories.map(x => (
               <SelectItem key={x?.category} value={x?.category}>{x?.category}</SelectItem>
             ))}

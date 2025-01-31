@@ -90,6 +90,13 @@ export async function getAllProducts({page,limit,query,category,sort,price,ratin
         ...priceFilter,
         ...ratingFilter
       },
+      orderBy:sort === 'lowest' ?
+      {price:'asc'}
+      : sort === 'highest'? 
+      {price:'desc'} 
+      : sort ===  'rating' ? 
+      {rating:'desc'} :
+      {createdAt:'desc'},
       take:limit ?? 10,
     })
     const dataCount = await prisma.product.count();
