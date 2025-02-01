@@ -1,6 +1,7 @@
 import { getMyCart } from "@/actions/cart.action";
 import { getProduct } from "@/actions/product.action";
 import { auth } from "@/auth";
+import Rating from "@/components/reviews/Rating";
 import ReviewList from "@/components/reviews/review-list";
 import AddToCart from "@/components/shared/products/add-to-cart";
 import ProductImages from "@/components/shared/products/product-images";
@@ -40,7 +41,9 @@ const ProductDetailPage = async ({params}:IParams) => {
               <div className="flex flex-col gap-6">
                 <p>{product?.brand} {product?.category}</p>
                 <h1 className="h3-bold">{product?.name}</h1>
-                <p>{Number(product?.rating)} of {product?.numReviews} Reviews</p>
+                {/* <p>{Number(product?.rating)} of {product?.numReviews} Reviews</p> */}
+                <Rating value={Number(product?.rating)}/>
+                <p>{product?.numReviews} Reviews</p>
                 <div className="flex flex-col sm:flex-row sm:items-center gap-3 ">
                   <ProductPrice value={Number(product?.price)} className="w-24 rounded-full bg-green-100 text-green-700 px-5 py-2"/>
                 </div>

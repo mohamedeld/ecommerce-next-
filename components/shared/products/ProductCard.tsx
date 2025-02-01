@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link"
 import ProductPrice from "./ProductPrice";
 import { Product } from "@prisma/client";
+import Rating from "@/components/reviews/Rating";
 
 
 interface IProps{
@@ -22,7 +23,7 @@ const ProductCard = ({product}:IProps) => {
           <h2 className="text-sm font-medium">{product?.name}</h2>
         </Link>
         <div className="flex-between gap-4">
-          <p>{Number(product?.rating)} Stars</p>
+        <Rating value={Number(product?.rating)}/>
           {product?.stock > 0 ? (
             <ProductPrice value={Number(product?.price)}/>
           ):(
