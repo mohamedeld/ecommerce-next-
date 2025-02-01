@@ -120,3 +120,11 @@ export const updateUserSchema = updateProfileSchmea?.extend({
   id:z.string().min(1,{message:"Product id is required"}),
   role:z.string().min(1,{message:"Role is required"})
 })
+
+export const insertReviewSchema = z.object({
+  title:z.string().min(3,{message:"Title is required"}),
+  description:z.string().min(3,{message:"description is required"}),
+  productId:z.string().min(1,{message:"product id is required"}),
+  userId:z.string().min(1,{message:"user id is required"}),
+  rating:z.coerce.number().int().min(1,{message:"rating must be at least 1"}).max(5,{message:"rating must be at most 5"}),
+})

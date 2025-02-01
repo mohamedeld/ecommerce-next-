@@ -1,5 +1,7 @@
 import { getMyCart } from "@/actions/cart.action";
 import { getProduct } from "@/actions/product.action";
+import { auth } from "@/auth";
+import ReviewList from "@/components/reviews/review-list";
 import AddToCart from "@/components/shared/products/add-to-cart";
 import ProductImages from "@/components/shared/products/product-images";
 import ProductPrice from "@/components/shared/products/ProductPrice";
@@ -15,6 +17,8 @@ interface IParams {
 }
 const ProductDetailPage = async ({params}:IParams) => {
   const {slug} = await params;
+  const session = await auth();
+  const userId = session?.user?.id;
   if(!slug){
     notFound();
   }
@@ -84,6 +88,10 @@ const ProductDetailPage = async ({params}:IParams) => {
               </Card>
             </div>
         </div>
+      </section>
+      <section className="mt-10">
+        <h2 className="h2-bold">Customer Review</h2>
+        <ReviewList userId={userId || ""} productId={product?.id} productSlug={slug}/>
       </section>
     </>
   )
